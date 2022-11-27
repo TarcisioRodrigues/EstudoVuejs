@@ -10,7 +10,7 @@
             placeholder=" Adicionar uma Tarefa"
            
           />
-          <button class="btn btn-success input-group-btn"  >
+          <button class="btn btn-success input-group-btn" :class='{loading}'  >
             <i class="icon icon-arrow-right"></i> Adicionar
           </button>
         </div>
@@ -54,36 +54,33 @@ export default {
   },
   data() {
     return {
-      tarefas: [],
+      
       tarefa: { checked: false },
     };
   },
+  computed:{
+    tarefas(){
+      return this.$store.state.tarefas
+    },
+    loading(){
+      return this.store.state.loading
+    }
+  },
   methods: {
-    addTarefa(tarefa) {
-      tarefa.id = Date.now();
-
-     if(!tarefa.description){
-      return alert('Campo vazio')
-     }else{
-      this.tarefas.push(this.tarefa);
-      this.tarefa = { checked: false };
+    async addTarefa(tarefa) {
+  
+      await this.$store.dispatch("addTarefa",tarefa)
+      this.tarefa={checked:false}
      
-     }
+     
     
       
     },
-    toggleTarefa(tarefa) {
-      const index = this.tarefas.findIndex((item) => item.id === tarefa.id);
-      if (index > -1) {
-        const checked = !this.tarefas[index].checked;
-        this.tarefas[index].checked = checked;
-      }
+     toggleTarefa(tarefa) {
+      this.$store.dispatch('toggleTarefa',tarefa)
     },
     removeTarefa(tarefa){
-      const index = this.tarefas.findIndex((item) => item.id === tarefa.id);
-      if (index > -1) {
-        this.tarefas.splice(index,1)
-      }
+      this.$store.dispatch('removeTarefa',tarefa)
     }
   },
 };
